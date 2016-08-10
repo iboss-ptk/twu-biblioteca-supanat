@@ -1,6 +1,7 @@
 package com.twu.biblioteca;
 
 import java.util.Arrays;
+import java.util.stream.Stream;
 
 /**
  * Created by Supanat Potiwarakorn on 10/8/59.
@@ -21,9 +22,14 @@ public class Library {
                 .toArray(String[]::new);
     }
 
-    public void checkout(String bookName) {
+    public Boolean checkout(String bookName) {
+        Boolean isSuccess = false;
+        for (Book book: books) {
+            isSuccess = isSuccess || bookName.equals(book.getName());
+        }
         books = Arrays.stream(books)
                 .filter(book -> !bookName.equals(book.getName()))
                 .toArray(Book[]::new);
+        return isSuccess;
     }
 }
