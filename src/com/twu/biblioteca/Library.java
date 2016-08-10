@@ -14,6 +14,7 @@ public class Library {
     }
     public String[] listAllBooks() {
         return Arrays.stream(books)
+                .filter(Book::isAvailable)
                 .map(book -> String.format(
                         "%s, author: %s, year published: %s",
                         book.getName(),
@@ -25,11 +26,14 @@ public class Library {
     public Boolean checkout(String bookName) {
         Boolean isSuccess = false;
         for (Book book: books) {
-            isSuccess = isSuccess || bookName.equals(book.getName());
+            Boolean isTargetedBook = bookName.equals(book.getName());
+            if(isTargetedBook) {
+                book.setAvailability(false);
+                isSuccess = true;
+                break;
+            }
         }
-        books = Arrays.stream(books)
-                .filter(book -> !bookName.equals(book.getName()))
-                .toArray(Book[]::new);
+
         return isSuccess;
     }
 }
