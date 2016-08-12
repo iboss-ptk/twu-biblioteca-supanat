@@ -1,14 +1,14 @@
 package com.twu.biblioteca;
 
 public class Book {
-    private String name, author, yearPublished;
+    final private String name, author, yearPublished;
     private Boolean availability;
 
-    public Book(String name, String author, String yearPublished) {
+    public Book(String name, String author, String yearPublished, boolean availability) {
         this.name = name;
         this.author = author;
         this.yearPublished = yearPublished;
-        this.availability = true;
+        this.availability = availability;
     }
 
     public String getName() {
@@ -27,7 +27,7 @@ public class Book {
         return this.availability;
     }
 
-    public void setAvailability(boolean availability) {
-        this.availability = availability;
+    public Book toAvailability(boolean availability) {
+        return new Book(this.name, this.author, this.yearPublished, availability);
     }
 }

@@ -1,18 +1,15 @@
 package com.twu.biblioteca;
 
 import java.util.Arrays;
-import java.util.stream.Stream;
 
-/**
- * Created by Supanat Potiwarakorn on 10/8/59.
- */
 public class Library {
     private Book[] books;
+    private enum Operation { CHECKOUT, RETURN }
 
     public Library(Book[] books) {
         this.books = books;
     }
-    public String[] listAllBooks() {
+    public String[] listAvailableBooks() {
         return Arrays.stream(books)
                 .filter(Book::isAvailable)
                 .map(book -> String.format(
@@ -23,17 +20,42 @@ public class Library {
                 .toArray(String[]::new);
     }
 
-    public Boolean checkout(String bookName) {
-        Boolean isSuccess = false;
-        for (Book book: books) {
-            Boolean isTargetedBook = bookName.equals(book.getName());
-            if(isTargetedBook) {
-                book.setAvailability(false);
-                isSuccess = true;
-                break;
-            }
-        }
-
+    public boolean checkout(String bookName) {
+        boolean isSuccess = isSuccess(Operation.CHECKOUT, bookName);
+        books = operate(Operation.CHECKOUT, bookName);
         return isSuccess;
+    }
+
+    public boolean returnBook(String bookName) {
+        boolean isSuccess = isSuccess(Operation.RETURN, bookName);
+        books = operate(Operation.RETURN, bookName);
+        return isSuccess;
+    }
+
+    private boolean isSuccess(Operation operation, String bookName) {
+        boolean isSuccess = false;
+        for (Book book : books) {
+            isSuccess = isSuccess || shouldOperate(operation, bookName, book);
+        }
+        return isSuccess;
+    }
+
+    private Book[] operate(Operation operation, String bookName) {
+        boolean targetAvailability = (operation == Operation.RETURN);
+        return Arrays.stream(books)
+                .map(book -> shouldOperate(operation, bookName, book)
+                        ? book.toAvailability(targetAvailability)
+                        : book)
+                .toArray(Book[]::new);
+    }
+
+    private boolean shouldOperate(Operation operation, String bookName, Book book) {
+        boolean isBookFound = book.getName().equals(bookName);
+        boolean isCheckedOut = !book.isAvailable();
+        switch (operation) {
+            case CHECKOUT: return isBookFound;
+            case RETURN: return isBookFound && isCheckedOut;
+            default: return false;
+        }
     }
 }
