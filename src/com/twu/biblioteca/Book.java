@@ -2,7 +2,7 @@ package com.twu.biblioteca;
 
 public class Book {
     final private String name, author, yearPublished;
-    private Boolean availability;
+    final private Boolean availability;
 
     public Book(String name, String author, String yearPublished, boolean availability) {
         this.name = name;
@@ -27,7 +27,7 @@ public class Book {
         return this.availability;
     }
 
-    public Book toAvailability(boolean availability) {
+    public Book withAvailability(boolean availability) {
         return new Book(this.name, this.author, this.yearPublished, availability);
     }
 }

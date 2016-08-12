@@ -9,6 +9,6 @@ public class BookTest {
     public void testBookAvailability() {
         Book book = new Book("book1", "author1", "1993", true);
         assertTrue(book.isAvailable());
-        assertFalse(book.toAvailability(false).isAvailable());
+        assertFalse(book.withAvailability(false).isAvailable());
     }
 }
