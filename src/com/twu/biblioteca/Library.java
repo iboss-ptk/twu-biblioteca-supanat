@@ -4,11 +4,12 @@ import java.util.Arrays;
 
 public class Library {
     private Book[] books;
-    private enum Operation { CHECKOUT, RETURN }
+    public enum Operation { CHECKOUT, RETURN }
 
     public Library(Book[] books) {
         this.books = books;
     }
+
     public String[] listAvailableBooks() {
         return Arrays.stream(books)
                 .filter(Book::isAvailable)
@@ -35,7 +36,7 @@ public class Library {
     private boolean isSuccess(Operation operation, String bookName) {
         boolean isSuccess = false;
         for (Book book : books) {
-            isSuccess = isSuccess || shouldOperate(operation, book, bookName);
+            isSuccess = isSuccess || canOperate(operation, book, bookName);
         }
         return isSuccess;
     }
@@ -43,13 +44,13 @@ public class Library {
     private Book[] operate(Operation operation, String bookName) {
         boolean targetAvailability = (operation == Operation.RETURN);
         return Arrays.stream(books)
-                .map(book -> shouldOperate(operation, book, bookName)
+                .map(book -> canOperate(operation, book, bookName)
                         ? book.withAvailability(targetAvailability)
                         : book)
                 .toArray(Book[]::new);
     }
 
-    private boolean shouldOperate(Operation operation, Book book, String bookName) {
+    private boolean canOperate(Operation operation, Book book, String bookName) {
         boolean isBookFound = book.getName().equals(bookName);
         boolean isCheckedOut = !book.isAvailable();
         switch (operation) {

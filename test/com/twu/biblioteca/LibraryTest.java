@@ -87,7 +87,7 @@ public class LibraryTest {
                 "book2, author: author2, year published: 2001"
         };
         Library library = new Library(books);
-        Boolean isSuccess = library.returnBook("book99");
+        Boolean isSuccess = library.returnBook("book1");
         assertFalse(isSuccess);
         assertArrayEquals(booksResult, library.listAvailableBooks());
     }
