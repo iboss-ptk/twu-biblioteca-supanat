@@ -3,55 +3,51 @@ package com.twu.biblioteca;
 import java.util.Arrays;
 
 public class Library {
-    private Book[] books;
+    private Book[] items;
     public enum Operation { CHECKOUT, RETURN }
 
     public Library(Book[] books) {
-        this.books = books;
+        this.items = books;
     }
 
     public String[] listAvailableBooks() {
-        return Arrays.stream(books)
+        return Arrays.stream(items)
                 .filter(Book::isAvailable)
-                .map(book -> String.format(
-                        "%s, author: %s, year published: %s",
-                        book.getName(),
-                        book.getAuthor(),
-                        book.getYearPublished()) )
+                .map(Book::getDetail)
                 .toArray(String[]::new);
     }
 
-    public boolean checkout(String bookName) {
-        boolean isSuccess = isSuccess(Operation.CHECKOUT, bookName);
-        books = operate(Operation.CHECKOUT, bookName);
+    public boolean checkout(String itemName) {
+        boolean isSuccess = isSuccess(Operation.CHECKOUT, itemName);
+        items = operate(Operation.CHECKOUT, itemName);
         return isSuccess;
     }
 
-    public boolean returnBook(String bookName) {
-        boolean isSuccess = isSuccess(Operation.RETURN, bookName);
-        books = operate(Operation.RETURN, bookName);
+    public boolean returnBook(String itemName) {
+        boolean isSuccess = isSuccess(Operation.RETURN, itemName);
+        items = operate(Operation.RETURN, itemName);
         return isSuccess;
     }
 
-    private boolean isSuccess(Operation operation, String bookName) {
+    private boolean isSuccess(Operation operation, String itemName) {
         boolean isSuccess = false;
-        for (Book book : books) {
-            isSuccess = isSuccess || canOperate(operation, book, bookName);
+        for (Book book : items) {
+            isSuccess = isSuccess || canOperate(operation, book, itemName);
         }
         return isSuccess;
     }
 
-    private Book[] operate(Operation operation, String bookName) {
+    private Book[] operate(Operation operation, String itemName) {
         boolean targetAvailability = (operation == Operation.RETURN);
-        return Arrays.stream(books)
-                .map(book -> canOperate(operation, book, bookName)
+        return Arrays.stream(items)
+                .map(book -> canOperate(operation, book, itemName)
                         ? book.withAvailability(targetAvailability)
                         : book)
                 .toArray(Book[]::new);
     }
 
-    private boolean canOperate(Operation operation, Book book, String bookName) {
-        boolean isBookFound = book.getName().equals(bookName);
+    private boolean canOperate(Operation operation, Book book, String itemName) {
+        boolean isBookFound = book.getName().equals(itemName);
         boolean isCheckedOut = !book.isAvailable();
         switch (operation) {
             case CHECKOUT: return isBookFound;

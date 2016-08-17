@@ -1,6 +1,6 @@
 package com.twu.biblioteca;
 
-public class Book {
+public class Book implements Item {
     final private String name, author, yearPublished;
     final private Boolean availability;
 
@@ -25,6 +25,14 @@ public class Book {
 
     public boolean isAvailable() {
         return this.availability;
+    }
+
+    public String getDetail() {
+        return String.format(
+                "%s, author: %s, year published: %s",
+                this.getName(),
+                this.getAuthor(),
+                this.getYearPublished());
     }
 
     public Book withAvailability(boolean availability) {
